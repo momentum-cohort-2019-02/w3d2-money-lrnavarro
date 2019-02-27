@@ -15,13 +15,18 @@ class Currency:
         - symbol - optional symbol used to designate currency
         - digits -- number of significant digits used
         """
-        pass
+        self.name = name
+        self.code = code
+        self.symbol = symbol
+        self.digits = digits
 
     def __str__(self):
         """
         Should return the currency code, or code with symbol in parentheses.
         """
-        pass
+        if self.symbol == None:
+            return str(self.code)
+        return "{} ({})".format(self.code, self.symbol)
 
     def __eq__(self, other):
         """
@@ -43,14 +48,17 @@ class Money:
         - amount -- quantity of currency
         - currency -- type of currency
         """
-        pass
+        self.amount = amount
+        self.currency = currency
 
     def __str__(self):
         """
         Should use the currency symbol if available, else use the code.
         Use the currency digits to determine number of digits to show.
         """
-        pass
+        if self.currency.symbol == None:
+            return "{} {:.{digits}f}".format(self.currency.code, float(self.amount), digits=self.currency.digits)
+        return "{}{:.{digits}f}".format(self.currency.symbol, float(self.amount), digits=self.currency.digits)
 
     def __repr__(self):
         return f"<Money {str(self)}>"
@@ -67,23 +75,29 @@ class Money:
         Add two money objects of the same currency. If they have different
         currencies, raise a DifferentCurrencyError.
         """
-        pass
+        if self.currency != other.currency:
+            raise DifferentCurrencyError
+        return Money(self.amount + other.amount,self.currency)
 
     def sub(self, other):
         """
         Subtract two money objects of the same currency. If they have different
         currencies, raise a DifferentCurrencyError.
         """
-        pass
+        if self.currency != other.currency:
+            raise DifferentCurrencyError
+        return Money(self.amount - other.amount,self.currency)
+
 
     def mul(self, multiplier):
         """
         Multiply a money object by a number to get a new money object.
         """
-        pass
+        return Money(self.amount * multiplier, self.currency)
+
 
     def div(self, divisor):
         """
         Divide a money object by a number to get a new money object.
         """
-        pass
+        return Money(self.amount / divisor, self.currency)
